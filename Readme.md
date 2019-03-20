@@ -13,7 +13,7 @@ It basically configure things like turning off write ahead log (`fsync=off`) to 
 
 This is an alternative to [H2](http://www.h2database.com/html/main.html), [in memory SQLite](https://www.sqlite.org/inmemorydb.html) and [HyperSQL](http://hsqldb.org/). You should consider this as it runs a real PostgreSQL server, that would be very close on what you have in production.
 
-Check the file `config.sh` for all the configurations.
+Check the file `init_for_testing.sh` for all the configurations.
 
 References:
 

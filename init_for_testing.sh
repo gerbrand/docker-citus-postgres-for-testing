@@ -3,6 +3,9 @@
 set -o errexit
 set -o nounset
 
+mkdir -p $PGDATA
+initdb -D $PGDATA
+
 echo "Configuring psql with improved performance..."
 
 sed -ri "s/^#*(fsync\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf

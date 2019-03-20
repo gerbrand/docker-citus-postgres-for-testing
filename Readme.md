@@ -1,14 +1,14 @@
 
-# Docker Postgres For Testing
+# Docker Postgres, with Citus and Postgis extensions, For Testing
 
-[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://registry.hub.docker.com/u/dhlparcel/docker-postgres-for-testing/)
-[![Docker Stars](https://img.shields.io/docker/stars/dhlparcel/docker-postgres-for-testing.svg)](https://registry.hub.docker.com/u/dhlparcel/docker-postgres-for-testing/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/dhlparcel/docker-postgres-for-testing.svg)](https://registry.hub.docker.com/u/dhlparcel/docker-postgres-for-testing/)
-[![Image Size](https://img.shields.io/imagelayers/image-size/dhlparcel/docker-postgres-for-testing/latest.svg)](https://imagelayers.io/?images=dhlparcel/docker-postgres-for-testing:latest)
-[![Image Layers](https://img.shields.io/imagelayers/layers/dhlparcel/docker-postgres-for-testing/latest.svg)](https://imagelayers.io/?images=dhlparcel/docker-postgres-for-testing:latest)
+[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://registry.hub.docker.com/u/gerbrand/citus-single-machine-cluster/)
+[![Docker Stars](https://img.shields.io/docker/stars/gerbrand/citus-single-machine-cluster.svg)](https://registry.hub.docker.com/u/gerbrand/citus-single-machine-cluster/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/gerbrand/citus-single-machine-cluster.svg)](https://registry.hub.docker.com/u/gerbrand/citus-single-machine-cluster/)
 
-This a docker image based in the [official Postgres 9.4 docker image](https://registry.hub.docker.com/_/postgres/) tweaked for database testing.
+This a docker image based on the [Postgres Citus docker image](https://registry.hub.docker.com/citusdata/citus) with the worker nodes preconfigured using manual on https://docs.citusdata.com/en/v8.1/installation/single_machine_debian.html and tweaked for testing (see below).
+Two worker nodes are started within the docker-container, so you'll have a full citus cluster running.
 
+## Tweaks for testing
 It basically configure things like turning off write ahead log (`fsync=off`) to make it faster. Notice that this can make the database more likely to be in an inconsistent state, if the case of a server crash. This is not a problem for database testing as we are more concerned with fast feedback and not about loosing data.
 
 This is an alternative to [H2](http://www.h2database.com/html/main.html), [in memory SQLite](https://www.sqlite.org/inmemorydb.html) and [HyperSQL](http://hsqldb.org/). You should consider this as it runs a real PostgreSQL server, that would be very close on what you have in production.

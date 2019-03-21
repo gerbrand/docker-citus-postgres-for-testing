@@ -27,6 +27,21 @@ file_env() {
 file_env 'POSTGRES_USER' 'postgres'
 file_env 'POSTGRES_DB' "$POSTGRES_USER"
 
+
+# check password first so we can output the warning before postgres
+# messes it up
+file_env 'POSTGRES_PASSWORD'
+if [ "$POSTGRES_PASSWORD" ]; then
+    pass="PASSWORD '$POSTGRES_PASSWORD'"
+    authMethod=md5
+else
+    # The - option suppresses leading tabs but *not* spaces. :)
+    echo "WARNING: No password has been set for the database."
+
+    pass=
+    authMethod=trust
+fi
+
 mkdir -p /data/citus/master /data/citus/worker1 /data/citus/worker2
 cd /data
 chown -R postgres /data/citus
@@ -36,7 +51,9 @@ set -o nounset
 for PGDATA in /data/citus/master /data/citus/worker1 /data/citus/worker2; do
     sudo -u postgres initdb -D $PGDATA
     echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
-    echo "host  all  all 0.0.0.0/0 trust" >> $PGDATA/pg_hba.conf
+
+    echo "" >> "$PGDATA/pg_hba.conf"
+    echo "host all all all $authMethod" >> "$PGDATA/pg_hba.conf"
 
     # Some settings for improved performance
     sed -ri "s/^#*(fsync\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf
@@ -49,7 +66,6 @@ for PGDATA in /data/citus/master /data/citus/worker1 /data/citus/worker2; do
     fsync "$PGDATA"/pg_hba.conf
 done
 
-
 sudo -u postgres pg_ctl -D /data/citus/master start
 sudo -u postgres pg_ctl -D /data/citus/worker1 -o "-p 9701" start
 sudo -u postgres pg_ctl -D /data/citus/worker2 -o "-p 9702" start
@@ -59,9 +75,9 @@ for PORT in 5432 9701 9702; do
         for f in /docker-entrypoint-initdb.d/*.sql; do
             if [ "$POSTGRES_DB" != 'postgres' ]; then
                 sudo -u postgres psql -U "$POSTGRES_USER" -h localhost -p $PORT -c "CREATE DATABASE $POSTGRES_DB;"
-                sudo -u postgres psql -U "$POSTGRES_USER" -h localhost -p $PORT -c "CREATE USER "$POSTGRES_USER" WITH SUPERUSER ;"
+                sudo -u postgres psql -U "$POSTGRES_USER" -h localhost -p $PORT -c "CREATE USER "$POSTGRES_USER" WITH SUPERUSER $pass ;"
             else
-                sudo -u postgres psql -U "$POSTGRES_USER" -h localhost -p $PORT -c "ALTER USER "$POSTGRES_USER" WITH SUPERUSER ;"
+                sudo -u postgres psql -U "$POSTGRES_USER" -h localhost -p $PORT -c "ALTER USER "$POSTGRES_USER" WITH SUPERUSER $pass ;"
             fi
             sudo -u postgres psql -h localhost -p $PORT -f "$f" "$POSTGRES_DB"
         done

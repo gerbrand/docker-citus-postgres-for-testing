@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Everyting below is based on/copied from the docker-entrypoint.sh of the original postgresql-docker at https://hub.docker.com/_/postgres
 
 set -e
 

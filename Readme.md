@@ -5,7 +5,9 @@
 [![Docker Stars](https://img.shields.io/docker/stars/gerbrand/citus-single-machine-cluster.svg)](https://registry.hub.docker.com/u/gerbrand/citus-single-machine-cluster/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/gerbrand/citus-single-machine-cluster.svg)](https://registry.hub.docker.com/u/gerbrand/citus-single-machine-cluster/)
 
-This a docker image based on the [Postgres Citus docker image](https://registry.hub.docker.com/citusdata/citus) with the worker nodes preconfigured using manual on https://docs.citusdata.com/en/v8.1/installation/single_machine_debian.html and tweaked for testing (see below).
+This a docker image based on the [Postgres Citus docker image](https://hub.docker.com/r/citusdata/citus) with the worker nodes preconfigured using manual on https://docs.citusdata.com/en/v8.1/installation/single_machine_debian.html and tweaked for testing (see below).
+The initialisation script, docker-entrypoint.sh based on the script of the [Postgres docker image](https://hub.docker.com/_/postgres).
+
 Two worker nodes are started within the docker-container, so you'll have a full citus cluster running.
 
 ## Tweaks for testing
@@ -13,7 +15,7 @@ It basically configure things like turning off write ahead log (`fsync=off`) to 
 
 This is an alternative to [H2](http://www.h2database.com/html/main.html), [in memory SQLite](https://www.sqlite.org/inmemorydb.html) and [HyperSQL](http://hsqldb.org/). You should consider this as it runs a real PostgreSQL server, that would be very close on what you have in production.
 
-Check the file `init_for_testing.sh` for all the configurations.
+Check the file `init_databases.sh` for all the configurations.
 
 References:
 

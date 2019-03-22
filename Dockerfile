@@ -72,6 +72,10 @@ RUN chmod +x ./*.sh
 
 RUN set -ex && apk --no-cache add sudo
 
+# Pre-init the database, no need to initialize the database. Of course
+# any password will be stored in the docker-image so only us this for testing
+RUN ./init-databases.sh
+
 EXPOSE 5432
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/run-cluster.sh"]

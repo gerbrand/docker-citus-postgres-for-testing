@@ -8,6 +8,8 @@
 This a docker image based on the [Postgres Citus docker image](https://hub.docker.com/r/citusdata/citus) with the worker nodes preconfigured using manual on https://docs.citusdata.com/en/v8.1/installation/single_machine_debian.html and tweaked for testing (see below).
 The initialisation script, docker-entrypoint.sh based on the script of the [Postgres docker image](https://hub.docker.com/_/postgres).
 
+The databases are prepared during build time, including postgis-extension. This way, the docker-image will start faster.
+
 Two worker nodes are started within the docker-container, so you'll have a full citus cluster running.
 
 ## Tweaks for testing

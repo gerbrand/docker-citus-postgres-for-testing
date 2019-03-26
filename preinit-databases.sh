@@ -26,6 +26,9 @@ for POSTGRES_DB in $POSTGRES_DB; do
     sudo -u postgres psql -c "SELECT * from master_add_node('localhost', 9702);" "$POSTGRES_DB"
 done
 
+echo Pre-init completed, shutting down database-nodes
+sleep 5s
+
 sudo -u postgres pg_ctl -D /data/citus/master -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker1 -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker2 -m fast -w stop

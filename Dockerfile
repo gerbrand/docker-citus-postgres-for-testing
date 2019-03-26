@@ -3,19 +3,15 @@ FROM citusdata/citus:$CITUS_BASE
 
 LABEL maintainer="gerbrand@software-creation.nl"
 
-# SQL files that are run at build-time, so the result is commit in the docker-image
-ARG SQL_BUILD_INIT_FILES=
-# You can define multiple distributed databases, by default there's one with name postgres
-# Username/password can be configured at run-time
-ARG POSTGRES_DBS=postgres
-
 ENV PGDATA /data/citus/master
 ENV PG_MAJOR 11
 
 ENV POSTGIS_MAJOR 2.5
 ENV POSTGIS_VERSION 2.5.2
 
-ENV POSTGRES_DBS $POSTGRES_DBS
+# You can define multiple distributed databases, by default there's one with name postgres
+# Username/password can be configured at run-time
+ENV POSTGRES_DBS postgres
 
 RUN set -ex \
     \
@@ -74,16 +70,17 @@ RUN set -ex \
 
 COPY ./update-postgis.sh /usr/local/bin
 
-RUN mkdir -p /data/citus && chown postgres /data/citus
-COPY init-postgis.sql $SQL_BUILD_INIT_FILES /docker-entrypoint-initdb.d/
-COPY ./docker-entrypoint.sh ./init-databases.sh ./run-cluster.sh /
+RUN mkdir -p /data/citus /docker-build-initdb.d && chown postgres /data/citus
+COPY init-postgis.sql /docker-build-initdb.d/
+RUN mv /docker-entrypoint-initdb.d/*.sql /docker-build-initdb.d/
+COPY ./create-nodes.sh ./preinit-databases.sh ./run-cluster.sh ./docker-entrypoint.sh /
 RUN chmod +x ./*.sh
 
 RUN set -ex && apk --no-cache add sudo
 
 # Pre-init the database, no need to initialize the database. Of course
 # any password will be stored in the docker-image so only us this for testing
-RUN ./init-databases.sh
+RUN /create-nodes.sh && /preinit-databases.sh
 
 # Expose coordinator. Worker's ports are not exposed
 EXPOSE 5432

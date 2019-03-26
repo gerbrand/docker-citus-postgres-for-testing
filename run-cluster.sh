@@ -57,16 +57,21 @@ sudo -u postgres pg_ctl -D /data/citus/master -l /var/log/postgres-master.log st
 sudo -u postgres pg_ctl -D /data/citus/worker1 -o "-p 9701" start
 sudo -u postgres pg_ctl -D /data/citus/worker2 -o "-p 9702" start
 
-if [ -f /docker-entrypoint-initdb.d/*.sql ]; then
-    for POSTGRES_DB in $POSTGRES_DBS; do
-        echo Running initialization scripts for database $POSTGRES_DB at $PORT
-        # database is already set-up, only run the entry-scripts
-        for f in /docker-entrypoint-initdb.d/*.sql; do
-            sudo -u postgres psql -h localhost -f "$f" "$POSTGRES_DB"
-            echo "Executed $f on $POSTGRES_DB"
-        done
+for POSTGRES_DB in $POSTGRES_DBS; do
+    echo Running initialization scripts for database $POSTGRES_DB
+    # database is already set-up, only run the entry-scripts
+    psql=( sudo -u postgres psql -v ON_ERROR_STOP=1 --dbname "$POSTGRES_DB" )
+    
+    for f in /docker-entrypoint-initdb.d/*; do
+        case "$f" in
+            *.sh)     echo "$0: running $f"; . "$f" ;;
+            *.sql)    echo "$0: running $f"; "${psql[@]}" -f "$f"; echo ;;
+            *.sql.gz) echo "$0: running $f"; gunzip -c "$f" | "${psql[@]}"; echo ;;
+            *)        echo "$0: ignoring $f" ;;
+        esac
+        echo
     done
-fi
+done
 
 # Finally set password
 if [ "$POSTGRES_USER" != 'postgres' ]; then

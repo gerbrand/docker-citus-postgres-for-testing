@@ -73,7 +73,7 @@ COPY ./update-postgis.sh /usr/local/bin
 RUN mkdir -p /data/citus /docker-build-initdb.d && chown postgres /data/citus
 COPY init-postgis.sql /docker-build-initdb.d/
 RUN mv /docker-entrypoint-initdb.d/*.sql /docker-build-initdb.d/
-COPY ./create-nodes.sh ./preinit-databases.sh ./run-cluster.sh ./docker-entrypoint.sh /
+COPY ./create-nodes.sh ./preinit-databases.sh ./docker-entrypoint.sh /
 RUN chmod +x ./*.sh
 
 RUN set -ex && apk --no-cache add sudo
@@ -85,4 +85,4 @@ RUN /create-nodes.sh && /preinit-databases.sh
 # Expose coordinator. Worker's ports are not exposed
 EXPOSE 5432
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["/run-cluster.sh"]
+CMD []

@@ -66,7 +66,7 @@ sudo -u postgres pg_ctl -D /data/citus/worker2 -o "-p 9702" start
 for POSTGRES_DB in $POSTGRES_DBS; do
     echo Running initialization scripts for database $POSTGRES_DB
     # database is already set-up, only run the entry-scripts
-    psql=( sudo -u postgres psql -v ON_ERROR_STOP=1 --dbname "$POSTGRES_DB" )
+    psql=( sudo -u postgres psql --dbname "$POSTGRES_DB" )
     
     for f in /docker-entrypoint-initdb.d/*; do
         case "$f" in

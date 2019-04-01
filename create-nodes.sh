@@ -16,6 +16,9 @@ if [ ! -s "/data/citus/master" ]; then
         echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
         # Avoiding 'sorry, too many clients already': Citus requires quite a few connections
         echo "max_connections = 250" >> "$PGDATA"/postgresql.conf
+        echo "max_prepared_transactions = 250" >> "$PGDATA"/postgresql.conf
+        # Disabled 2pc, little use in test-set-up in single container
+        echo "citus.multi_shard_commit_protocol = 1pc" >> "$PGDATA"/postgresql.conf
 
         fsync "$PGDATA"/postgresql.conf
         fsync "$PGDATA"/pg_hba.conf

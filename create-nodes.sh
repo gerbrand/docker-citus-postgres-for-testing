@@ -14,6 +14,8 @@ if [ ! -s "/data/citus/master" ]; then
     for PGDATA in /data/citus/master /data/citus/worker1 /data/citus/worker2; do
         sudo -u postgres initdb -D $PGDATA
         echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
+        # Avoiding 'sorry, too many clients already': Citus requires quite a few connections
+        echo "max_connections = 250" >> "$PGDATA"/postgresql.conf
 
         fsync "$PGDATA"/postgresql.conf
         fsync "$PGDATA"/pg_hba.conf

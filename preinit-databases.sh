@@ -31,3 +31,4 @@ sudo -u postgres pg_ctl -D /data/citus/master -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker1 -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker2 -m fast -w stop
 
+sleep 5s

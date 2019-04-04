@@ -47,13 +47,6 @@ fi
 
 PGDATA_MASTER=$PGDATA
 for PGDATA in $PGDATA_MASTER /data/citus/worker1 /data/citus/worker2; do
-    # Some settings for improved performance
-    sed -ri "s/^#*(fsync\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf
-    sed -ri "s/^#*(full_page_writes\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf
-    sed -ri "s/^#*(random_page_cost\s*=\s*)\S+/\1 2.0/" "$PGDATA"/postgresql.conf
-    sed -ri "s/^#*(checkpoint_segments\s*=\s*)\S+/\1 64/" "$PGDATA"/postgresql.conf
-    sed -ri "s/^#*(checkpoint_completion_target\s*=\s*)\S+/\1 0.9/" "$PGDATA"/postgresql.conf
-
     echo "" >> "$PGDATA/pg_hba.conf"
     echo "host all all all $authMethod" >> "$PGDATA/pg_hba.conf"
     fsync "$PGDATA"/pg_hba.conf

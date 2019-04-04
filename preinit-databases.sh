@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Script to be run during build-time, to pre-initialise database(s) for faster startup time
-sudo -u postgres pg_ctl -D /data/citus/master start
+sudo -u postgres pg_ctl -D $PGDATA start
 sudo -u postgres pg_ctl -D /data/citus/worker1 -o "-p 9701" start
 sudo -u postgres pg_ctl -D /data/citus/worker2 -o "-p 9702" start
 
@@ -27,7 +27,7 @@ done
 echo Pre-init completed, shutting down database-nodes
 sleep 5s
 
-sudo -u postgres pg_ctl -D /data/citus/master -m fast -w stop
+sudo -u postgres pg_ctl -D $PGDATA -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker1 -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker2 -m fast -w stop
 

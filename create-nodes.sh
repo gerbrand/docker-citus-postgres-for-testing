@@ -3,15 +3,16 @@
 
 set -e
 
-if [ ! -s "/data/citus/master" ]; then
+if [ ! -s "$PGDATA" ]; then
 
-    mkdir -p /data/citus/master /data/citus/worker1 /data/citus/worker2
+    mkdir -p $PGDATA /data/citus/worker1 /data/citus/worker2
     cd /data
     chown -R postgres /data/citus
 
     set -o errexit
     set -o nounset
-    for PGDATA in /data/citus/master /data/citus/worker1 /data/citus/worker2; do
+    PGDATA_MASTER=$PGDATA
+    for PGDATA in $PGDATA_MASTER /data/citus/worker1 /data/citus/worker2; do
         sudo -u postgres initdb -D $PGDATA
         echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
         # Disabled 2pc, little use in test-set-up in single container

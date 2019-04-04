@@ -45,7 +45,8 @@ else
     authMethod=trust
 fi
 
-for PGDATA in /data/citus/master /data/citus/worker1 /data/citus/worker2; do
+PGDATA_MASTER=$PGDATA
+for PGDATA in $PGDATA_MASTER /data/citus/worker1 /data/citus/worker2; do
     # Some settings for improved performance
     sed -ri "s/^#*(fsync\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf
     sed -ri "s/^#*(full_page_writes\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf
@@ -58,7 +59,7 @@ for PGDATA in /data/citus/master /data/citus/worker1 /data/citus/worker2; do
     fsync "$PGDATA"/pg_hba.conf
 done
 
-sudo -u postgres pg_ctl -D /data/citus/master -l /var/log/postgres-master.log start
+sudo -u postgres pg_ctl -D $PGDATA_MASTER -l /var/log/postgres-master.log start
 sudo -u postgres pg_ctl -D /data/citus/worker1 -o "-p 9701" start
 sudo -u postgres pg_ctl -D /data/citus/worker2 -o "-p 9702" start
 

@@ -15,6 +15,8 @@ if [ ! -s "$PGDATA" ]; then
     for PGDATA in $PGDATA_MASTER /data/citus/worker1 /data/citus/worker2; do
         sudo -u postgres initdb -D $PGDATA
         echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
+        # Big number to avoid running out of worker processes, probably not optimal
+	echo "max_worker_processes = 32" >> $PGDATA/postgresql.conf
         # Disabled 2pc, little use in test-set-up in single container
         echo "citus.multi_shard_commit_protocol = 1pc" >> "$PGDATA"/postgresql.conf
 

@@ -25,10 +25,10 @@ for POSTGRES_DB in $POSTGRES_DBS; do
 done
 
 echo Pre-init completed, shutting down database-nodes
-sleep 5s
+sleep 15s
 
 sudo -u postgres pg_ctl -D $PGDATA -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker1 -m fast -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker2 -m fast -w stop
 
-sleep 5s
+sleep 15s

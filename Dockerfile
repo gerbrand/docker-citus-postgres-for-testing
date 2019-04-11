@@ -1,4 +1,4 @@
-ARG CITUS_BASE=8.1.1-alpine
+ARG CITUS_BASE=8-alpine
 FROM citusdata/citus:$CITUS_BASE
 
 LABEL maintainer="gerbrand@software-creation.nl"

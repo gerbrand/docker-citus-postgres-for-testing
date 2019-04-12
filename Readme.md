@@ -10,14 +10,14 @@ The initialisation script, docker-entrypoint.sh based on the script of the [Post
 
 The database(s) are prepared during *build-time*, including postgis-extension. This way, the docker-image will start faster.
 
-* By default, the default database *postgres* is available. Other database(s) can be configured using build-arguments, for example:
+* By default, no database is available. Database(s) can be configured using build-arguments, for example:
   `docker build . --tag myapp/citus-single-machine-cluster:latest --build-arg "POSTGRES_DBS=myappa myappb"`
 
 * If you create an image based on this image, and you want to preinitialise other databases, you can add sql-files to the directory `docker-build-initdb.d` and run `/pre-init-databases.sh`.<br/>
-  An example-docker-file for an image with two extra databases and init-file run for each database:
+  An example-docker-file for an image with two extra databases and init-file run for each database. The build-arg is not used, as we're overriding
+  the ENV variable POSTGRES_DBS:
   <pre>FROM gerbrand/citus-single-machine-cluster:latest
-  ADD --chown=daemon:daemon opt /opt
-  ENV POSTGRES_DBS="reporting-service reporting-service-test"
+  ENV POSTGRES_DBS="appdb appdb-test"
   ADD ["opt/docker/docker-build-initdb.d/", "/docker-build-initdb.d/"]
   RUN ["/preinit-databases.sh"]</pre>
 
@@ -27,7 +27,7 @@ The database(s) are prepared during *build-time*, including postgis-extension. T
 Username and password can be set during *run-time*, for example
 `POSTGRES_USER=myapp POSTGRES_PASSWORD=myapppassword docker run -p5432:5432 gerbrand/citus-single-machine-cluster:latest`
 
-Two worker nodes are started within the docker-container, so you'll have a full citus cluster running with minimal start-up time. Great for integration-tests.
+One worker node is started within the docker-container, so you'll have a full citus cluster running with minimal start-up time. Great for integration-tests.
 
 ## Tweaks and tips for testing
 See [labianchin's readme](https://github.com/labianchin/docker-postgres-for-testing#tips-for-writing-tests)

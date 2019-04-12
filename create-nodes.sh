@@ -16,9 +16,18 @@ if [ ! -s "$PGDATA" ]; then
         sudo -u postgres initdb -D $PGDATA
         echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
         # Big number to avoid running out of worker processes, probably not optimal
-	echo "max_worker_processes = 16" >> $PGDATA/postgresql.conf
+	    echo "max_worker_processes = 16" >> $PGDATA/postgresql.conf
         # Disabled 2pc, little use in test-set-up in single container
         echo "citus.multi_shard_commit_protocol = 1pc" >> "$PGDATA"/postgresql.conf
+        # Some configuration options for improved performance, taken from:
+        # https://github.com/labianchin/docker-postgres-for-testing/blob/master/config.sh
+        echo "Configuring psql with improved performance..."
+
+        sed -ri "s/^#*(fsync\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf
+        sed -ri "s/^#*(full_page_writes\s*=\s*)\S+/\1 off/" "$PGDATA"/postgresql.conf
+        sed -ri "s/^#*(random_page_cost\s*=\s*)\S+/\1 2.0/" "$PGDATA"/postgresql.conf
+        sed -ri "s/^#*(checkpoint_segments\s*=\s*)\S+/\1 64/" "$PGDATA"/postgresql.conf
+        sed -ri "s/^#*(checkpoint_completion_target\s*=\s*)\S+/\1 0.9/" "$PGDATA"/postgresql.conf
 
         fsync "$PGDATA"/postgresql.conf
         fsync "$PGDATA"/pg_hba.conf

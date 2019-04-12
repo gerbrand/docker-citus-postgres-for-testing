@@ -1,4 +1,5 @@
 ARG CITUS_BASE=8-alpine
+ARG POSTGRES_DBS
 FROM citusdata/citus:$CITUS_BASE
 
 LABEL maintainer="gerbrand@software-creation.nl"
@@ -9,9 +10,9 @@ ENV PG_MAJOR 11
 ENV POSTGIS_MAJOR 2.5
 ENV POSTGIS_VERSION 2.5.2
 
-# You can define multiple distributed databases, by default there's one with name postgres
-# Username/password can be configured at run-time
-ENV POSTGRES_DBS postgres
+# You can define multiple distributed databases, by default no database is created
+# Username/password can/should be configured at run-time to avoid having password stored int the image
+ENV POSTGRES_DBS ${POSTGRES_DBS}
 
 RUN set -ex \
     \

@@ -5,14 +5,14 @@ set -e
 
 if [ ! -s "$PGDATA" ]; then
 
-    mkdir -p $PGDATA /data/citus/worker1 /data/citus/worker2
+    mkdir -p $PGDATA /data/citus/worker1
     cd /data
     chown -R postgres /data/citus
 
     set -o errexit
     set -o nounset
     PGDATA_MASTER=$PGDATA
-    for PGDATA in $PGDATA_MASTER /data/citus/worker1 /data/citus/worker2; do
+    for PGDATA in $PGDATA_MASTER /data/citus/worker1; do
         sudo -u postgres initdb -D $PGDATA
         echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
         # Big number to avoid running out of worker processes, probably not optimal

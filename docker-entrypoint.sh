@@ -46,7 +46,7 @@ else
 fi
 
 PGDATA_MASTER=$PGDATA
-for PGDATA in $PGDATA_MASTER /data/citus/worker1 /data/citus/worker2; do
+for PGDATA in $PGDATA_MASTER /data/citus/worker1; do
     echo "" >> "$PGDATA/pg_hba.conf"
     echo "host all all all $authMethod" >> "$PGDATA/pg_hba.conf"
     fsync "$PGDATA"/pg_hba.conf
@@ -54,7 +54,6 @@ done
 
 sudo -u postgres pg_ctl -D $PGDATA_MASTER -l /var/log/postgres-master.log start
 sudo -u postgres pg_ctl -D /data/citus/worker1 -o "-p 9701" start
-sudo -u postgres pg_ctl -D /data/citus/worker2 -o "-p 9702" start
 
 for POSTGRES_DB in $POSTGRES_DBS; do
     echo Running initialization scripts for database $POSTGRES_DB

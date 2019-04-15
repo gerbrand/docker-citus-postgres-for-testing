@@ -25,7 +25,7 @@ done
 echo Pre-init completed, shutting down database-nodes
 sleep 15s
 
-sudo -u postgres pg_ctl -D $PGDATA -m fast -w stop
-sudo -u postgres pg_ctl -D /data/citus/worker1 -m fast -w stop
+sudo -u postgres pg_ctl -D $PGDATA -w stop
+sudo -u postgres pg_ctl -D /data/citus/worker1 -w stop
 
 sleep 15s

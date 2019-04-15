@@ -18,7 +18,7 @@ The database(s) are prepared during *build-time*, including postgis-extension. T
   the ENV variable POSTGRES_DBS:
   <pre>FROM gerbrand/citus-single-machine-cluster:latest
   ENV POSTGRES_DBS="appdb appdb-test"
-  ADD ["opt/docker/docker-build-initdb.d/", "/docker-build-initdb.d/"]
+  ADD ["some-test-data.sql", "/docker-build-initdb.d/"]
   RUN ["/preinit-databases.sh"]</pre>
 
 * Sql-files added the the directory `/docker-entrypoint-initdb.d` will be run during run-time.<br/>

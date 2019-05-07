@@ -23,9 +23,13 @@ for POSTGRES_DB in $POSTGRES_DBS; do
 done
 
 echo Pre-init completed, shutting down database-nodes
-sleep 15s
+sleep 1s
 
 sudo -u postgres pg_ctl -D $PGDATA -w stop
 sudo -u postgres pg_ctl -D /data/citus/worker1 -w stop
 
-sleep 15s
+echo Syncing database-files to disk
+find $PGDATA -exec fsync \{\} \;
+find /data/citus/worker1 -exec fsync \{\} \;
+
+sleep 1s

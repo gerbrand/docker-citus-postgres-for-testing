@@ -16,9 +16,9 @@ if [ ! -s "$PGDATA" ]; then
         sudo -u postgres initdb -D $PGDATA
         echo "shared_preload_libraries = 'citus'" >> $PGDATA/postgresql.conf
         # Big number to avoid running out of worker processes, probably not optimal
-	echo "max_worker_processes = 16" >> $PGDATA/postgresql.conf
-        # Citus needs a lot of connections, set max connecdtion to arbitrairy high number
-        echo "max_connections = 200" >> $PGDATA/postgresql.conf
+	    echo "max_worker_processes = 8" >> $PGDATA/postgresql.conf
+        # Citus needs a lot of connections, set max to some high number
+        echo "max_connections = 150" >> $PGDATA/postgresql.conf
 
         # Disabled 2pc, little use in test-set-up in single container
         echo "citus.multi_shard_commit_protocol = 1pc" >> "$PGDATA"/postgresql.conf
